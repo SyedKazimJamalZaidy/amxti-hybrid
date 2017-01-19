@@ -1,1 +1,2 @@
-# amxti-hybrid
+# amxti
+Flights App
