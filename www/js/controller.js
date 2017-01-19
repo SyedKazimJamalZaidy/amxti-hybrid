@@ -5,6 +5,8 @@ var result; //Response result of Airports from solude amxti
 var airlineInfo; //Response result of Airlines
 var selectedFlight;
 var securityToken; //Security Token received from Sabre
+var airlineCodeFinal = ""; //for flight preferences
+var passengerUniqueId;//PNR
 app.controller('MenuController', function($scope, $ionicSideMenuDelegate) {
       $scope.toggleLeft = function() {
         $ionicSideMenuDelegate.toggleLeft();
@@ -69,7 +71,7 @@ app.controller('LoginController', function($scope, $ionicSideMenuDelegate, $stat
       var adult = document.getElementById('adult').value;
       var airlineCode = document.getElementById("airlineCode");
       var airlinesName = airlineCode.options[airlineCode.selectedIndex].value;
-      var airlineCodeFinal = "";
+      
       var fromIATA;
       var toIATA;
       for (var i = 0; i < result.length; i++) {
@@ -191,7 +193,6 @@ $.ajax(getFlightData).done(function(response){
 
 $.ajax(auth).done(function(response){
   securityToken = response.getElementsByTagName("BinarySecurityToken")[0].childNodes[0].nodeValue;
-  console.log(securityToken);
   })
   
 
@@ -463,7 +464,104 @@ app.controller('UserDetailsController', function($scope, $ionicSideMenuDelegate,
         
       });
       $scope.toPayment = function(){
-        $state.go('menu.paymentmethod');
+         
+          
+          var fname = document.getElementById("fname").value;
+          var mname = document.getElementById("mname").value;
+          var lname = document.getElementById("lname").value;
+          var countrycode = document.getElementById("countrycode");
+          var selectedCountryName = countrycode.options[countrycode.selectedIndex].value;
+          var selectedCountryCode;
+          var cnumber = document.getElementById("cnumber").value;
+          
+          for (var i = 0; i < $scope.countryCodes.length; i++) {
+            
+           if($scope.countryCodes[i].name == selectedCountryName){
+            selectedCountryCode = $scope.countryCodes[i].code;
+           }
+          }
+        //Getting user data
+        var getUserData = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://webservices-as.havail.sabre.com/",
+            "method": "POST",
+            "headers": {
+              "content-type": "text/xml",
+              "cache-control": "no-cache",
+              "postman-token": "357213ea-f74f-69b4-7a04-9fc3beddd1f2"
+            },
+            "data": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n   <soapenv:Header>\r\n      <MessageHeader xmlns=\"http://www.ebxml.org/namespaces/messageHeader\">\r\n         <From>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">CRS</PartyId>\r\n         </From>\r\n         <To>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">Sabre</PartyId>\r\n         </To>\r\n         <CPAId>R7OI</CPAId>\r\n         <ConversationId>9999</ConversationId>\r\n         <Service type=\"string\">Cruise</Service>\r\n         <Action>PassengerDetailsRQ</Action>\r\n         <MessageData>\r\n            <MessageId>1426190858</MessageId>\r\n            <Timestamp>2015-03-12T02:07:38-06:00</Timestamp>\r\n            <TimeToLive>2015-03-12T03:07:38-06:00</TimeToLive>\r\n         </MessageData>\r\n      </MessageHeader>\r\n      <wsse:Security xmlns:wsse=\"http://schemas.xmlsoap.org/ws/2002/12/secext\" xmlns:wsu=\"http://schemas.xmlsoap.org/ws/2002/12/utility\">\r\n           <wsse:BinarySecurityToken  valueType=\"String\" EncodingType=\"wsse:Base64Binary\">"+securityToken+"</wsse:BinarySecurityToken>\r\n      </wsse:Security>\r\n   </soapenv:Header>\r\n   <soapenv:Body>\r\n   \r\n   <PassengerDetailsRQ xmlns=\"http://services.sabre.com/sp/pd/v3_3\" version=\"3.3.0\" IgnoreOnError=\"false\" HaltOnError=\"false\">\r\n\t<MiscSegmentSellRQ>\r\n\t\t<MiscSegment DepartureDateTime=\"01-24\" InsertAfter=\"0\" NumberInParty=\"1\" Status=\"GK\" Type=\"OTH\">\r\n\t\t\t<OriginLocation LocationCode=\""+selectedFlight[0].departureAirport+"\"/>\r\n\t\t\t<Text>RETENTION SEGMENT</Text>\r\n\t\t\t<VendorPrefs>\r\n\t\t\t\t<Airline Code=\""+airlineCodeFinal+"\"/>\r\n\t\t\t</VendorPrefs>\r\n\t\t</MiscSegment>\r\n\t</MiscSegmentSellRQ>\r\n\t<PostProcessing IgnoreAfter=\"false\" RedisplayReservation=\"true\">\r\n\t\t<EndTransactionRQ>\r\n\t\t\t<EndTransaction Ind=\"true\">\r\n\t\t\t</EndTransaction>\r\n\t\t\t<Source ReceivedFrom=\"AMXTI\"/>\r\n\t\t</EndTransactionRQ>\r\n\t</PostProcessing>\r\n\t\r\n\t\r\n\t\t<TravelItineraryAddInfoRQ>\r\n\t\t\t<AgencyInfo>\r\n\t\t\t\t<Ticketing TicketType=\"7TAW/\"/>\r\n\t\t\t</AgencyInfo>\r\n\t\t\t<CustomerInfo>\r\n\t\t\t\t<ContactNumbers>\r\n\t\t\t\t\t  <ContactNumber NameNumber=\"1.1\" Phone=\""+selectedCountryCode+cnumber+"\" PhoneUseType=\"M\" />\r\n\t\t\t\t</ContactNumbers>\r\n\t\t\t\t<PersonName NameNumber=\"1.1\" PassengerType=\"ADT\">\r\n\t\t\t\t\t     <GivenName>"+fname + mname+"</GivenName>\r\n                <Surname>"+lname+"</Surname>\r\n\t\t\t\t</PersonName>\r\n\t\t\t</CustomerInfo>\r\n\t\t</TravelItineraryAddInfoRQ>\r\n\t    \r\n\t</PassengerDetailsRQ>\r\n\t\r\n\t\r\n\r\n    </soapenv:Body>\r\n</soapenv:Envelope>"
+          }
+
+          $.ajax(getUserData).done(function(response){
+            passengerUniqueId = response.getElementsByTagName("ItineraryRef")[0].getAttribute("ID");
+            
+            var flightSegment = [];
+            for (var i = 0; i < selectedFlight.length; i++) {
+                flightSegment.push(" <FlightSegment DepartureDateTime=\""+selectedFlight[i].departureDate+'T'+selectedFlight[i].departureTime+"\" FlightNumber=\""+selectedFlight[i].flightNumber+"\" NumberInParty=\"1\" ResBookDesigCode=\"Y\" Status=\"NN\">\
+                <DestinationLocation LocationCode=\""+selectedFlight[i].arrivalAirport+"\" />\
+                <MarketingAirline Code=\""+selectedFlight[i].flightCode+"\" FlightNumber=\""+selectedFlight[i].flightNumber+"\" />\
+                <OriginLocation LocationCode=\""+selectedFlight[i].departureAirport+"\" />\
+            </FlightSegment>"); 
+            }
+            flightSegment = flightSegment.join(" ");
+            console.log(flightSegment);
+            var flightBooking = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://webservices-as.havail.sabre.com/",
+            "method": "POST",
+            "headers": {
+              "content-type": "text/xml",
+              "cache-control": "no-cache",
+              },
+            "data" : "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\
+                     <soapenv:Header>\
+                        <MessageHeader xmlns=\"http://www.ebxml.org/namespaces/messageHeader\">\
+                           <From>\
+                              <PartyId type=\"urn:x12.org:IO5:01\">CRS</PartyId>\
+                           </From>\
+                           <To>\
+                              <PartyId type=\"urn:x12.org:IO5:01\">Sabre</PartyId>\
+                           </To>\
+                           <CPAId>R7OI</CPAId>\
+                           <ConversationId>9999</ConversationId>\
+                           <Service type=\"string\">Cruise</Service>\
+                           <Action>EnhancedAirBookRQ</Action>\
+                           <MessageData>\
+                              <MessageId>1426190858</MessageId>\
+                              <Timestamp>2015-03-12T02:07:38-06:00</Timestamp>\
+                              <TimeToLive>2015-03-12T03:07:38-06:00</TimeToLive>\
+                           </MessageData>\
+                        </MessageHeader>\
+                        <wsse:Security xmlns:wsse=\"http://schemas.xmlsoap.org/ws/2002/12/secext\" xmlns:wsu=\"http://schemas.xmlsoap.org/ws/2002/12/utility\">\
+                             <wsse:BinarySecurityToken  valueType=\"String\" EncodingType=\"wsse:Base64Binary\">"+securityToken+"</wsse:BinarySecurityToken>\
+                        </wsse:Security>\
+                     </soapenv:Header>\
+                    <soapenv:Body>\
+                        <EnhancedAirBookRQ xmlns=\"http://services.sabre.com/sp/eab/v3_7\" version=\"3.7.0\" IgnoreOnError=\"true\" HaltOnError=\"true\">\
+                                    <OTA_AirBookRQ>\
+                                    <OriginDestinationInformation>\
+                                        "+flightSegment+"\
+                                        </OriginDestinationInformation>\
+                                    </OTA_AirBookRQ>\
+                                    <PostProcessing IgnoreAfter=\"true\">\
+                                        <RedisplayReservation/>\
+                                    </PostProcessing>\
+                                    <PreProcessing IgnoreBefore=\"false\">\
+                                        <UniqueID ID=\""+passengerUniqueId+"\" />\
+                                    </PreProcessing>\
+                                  </EnhancedAirBookRQ>\
+                                  </soapenv:Body>\
+                                  </soapenv:Envelope>"}
+                console.log(flightBooking);
+
+              $.ajax(flightBooking).done(function(response){
+                console.log(response);
+              })
+          })
+        // $state.go('menu.paymentmethod');
       }
     })
 //User Details Controller End
