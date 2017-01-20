@@ -54,7 +54,10 @@ app.controller('FirstController', function($scope, $ionicSideMenuDelegate, $stat
 //Login Page Controller
 app.controller('LoginController', function($scope, $ionicSideMenuDelegate, $state) {
         $scope.success = function(){
-            $state.go('menu.round');
+            $state.go('menu.homepage');
+        }
+		$scope.register = function(){
+            $state.go('registration');
         }
     })
 

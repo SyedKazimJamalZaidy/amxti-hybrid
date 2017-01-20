@@ -8,11 +8,11 @@ var app = angular.module('demo', ['ionic', 'ngMessages'])
         $stateProvider
         // Pre-Login Pages
             //First Page
-            .state('first',{
+           /* .state('first',{
                 url: '/first',
                 templateUrl: 'templates/first.html',
                 controller: 'FirstController'
-            })
+            })*/
             //Login Page
             .state('login',{
                 url: '/login',
@@ -31,6 +31,15 @@ var app = angular.module('demo', ['ionic', 'ngMessages'])
                 templateUrl : 'templates/menu-abstract.html',
                 abstract : true,
                 controller : 'MenuController'
+            })
+			//First Start page
+			.state('menu.homepage', {
+                url: '/homepage',
+                views: {
+                    'view-content': {
+                        templateUrl: 'templates/homepage.html'
+                    }
+                }
             })
             //Roundtrip Page/Tab
             .state('menu.round', {
@@ -149,7 +158,7 @@ var app = angular.module('demo', ['ionic', 'ngMessages'])
                 }
             })
 
-        $urlRouterProvider.otherwise('/first');
+        $urlRouterProvider.otherwise('/login');
     }])
     
 
