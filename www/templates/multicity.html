@@ -11,24 +11,29 @@
                     <span class="input-label">From</span>
                     <input type="text" placeholder="Jinnah International Airport" ng-model="input.from" id="from">
                   </label>
+                   <div class="linespace"></div>
                   <label class="item item-input item-stacked-label">
                     <span class="input-label">To</span>
                     <input type="text" placeholder="Allama Iqbal International Airport" ng-model="input.to" id="to">
                   </label>
+                   <div class="linespace"></div>
                   <label class="item item-input item-stacked-label">
                     <span class="input-label">Departure Date</span>
-                    <input type="date" id="departDate" name="departDate" ng-model="input.departDate" id="departDate">
+                    <input type="date" name="departDate" ng-model="input.departDate" id="departDate">
                   </label>
+                   <div class="linespace"></div>
                   <label class="item item-input item-stacked-label">
                     <span class="input-label">Arrival Date</span>
-                    <input type="date" id="arrDate" name="arrDate" ng-model="input.arrDate" id="arrDate">
+                    <input type="date" name="arrDate" ng-model="input.arrDate" id="arrDate">
                   </label>
+                   <div class="linespace"></div>
                   <div class="item item-divider">
                     <button class="button button-assertive button-small ion-plus-round" ng-if="$index == inputs.length - 1" ng-click="addMore($index)"> Add more locations</button>
                      <button class="button button-assertive button-small ion-plus-round" ng-if="$index != inputs.length - 1" ng-click="removeMore()"> Delete locations</button>
                   </div>
                 </div>
-                <div class="row">
+                 <div class="linespace"></div>
+                <div class="row paddingoff">
                   <div class="col">
                     <label class="item item-input item-stacked-label">
                       <span class="input-label">Adults</span>
@@ -48,6 +53,7 @@
                     </label>
                   </div>
                 </div>
+                 <div class="linespace"></div>
                 <label class="item item-input item-select">
                   <div class="input-label">
                     Preffered Flight
@@ -56,8 +62,8 @@
                     <option ng-repeat="names in airlineName">{{names}}</option>
                   </select>
                 </label>
-              </div>
-                <a class="button button-block button-positive" ng-click="flightDetails()" ng-disabled="roundForm.$invalid">
+             
+                <a class="button button-block button-royal"  ng-click="flightDetails()" ng-disabled="roundForm.$invalid">
                   Proceed
                 </a>
               </form>
