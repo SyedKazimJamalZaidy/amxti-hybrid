@@ -2,8 +2,9 @@
 <ion-view view-title="Flight Confirmation">
   <ion-content has-subheader="false">
     <div class="list" ng-repeat="data in selectedFlight">
-                <div class="item item-divider">
-                  Flight Itenirary Start
+                <div class="item item-divider" ng-click="toggleGroup(data)" class="{active:isGroupShown(data)}">
+                 <i class="icon" ng-class="isGroupShown(data) ? 'ion-minus' : 'ion-plus'"></i> &nbsp;
+                  Flight Itenirary Start {{$index +1}}
                 </div>
                     <a class="item">
                     Departure Airport: {{data.departureAirport}}</br>

@@ -3,7 +3,8 @@ var destinationName = []; //destination name coming from solude.amxti server
 var destinationIATA = []; //IATA name coming from solude.amxti server
 var result; //Response result of Airports from solude amxti
 var airlineInfo; //Response result of Airlines
-var selectedFlight;
+var selectedFlightMulti =[]; //for multi city
+var selectedFlight; //for round and single trip
 var securityToken; //Security Token received from Sabre
 var airlineCodeFinal = ""; //for flight preferences
 var passengerUniqueId;//PNR
@@ -456,12 +457,13 @@ app.controller('FlightDetailMultiController0', function($scope, $ionicSideMenuDe
         $scope.finalData = resultDataMulti0;
         $scope.toConfirm = function($index){
           selectedFlightMulti0 = $scope.finalData[$index];
+          selectedFlightMulti.push(selectedFlightMulti0);
           // $state.go('menu.flightconfirmation');
           if(resultDataMulti1.length != 0){
-            $state.go('menu.flightdetailsmulti1')
+            $state.go('menu.flightdetailsmulti1');
           }
           else {
-            console.log('Success');
+            $state.go('menu.flightconfirmationMulti');
           }
         }
         $scope.toggleGroup = function(group) {
@@ -483,12 +485,13 @@ app.controller('FlightDetailMultiController1', function($scope, $ionicSideMenuDe
        $scope.finalData = resultDataMulti1;
         $scope.toConfirm = function($index){
           selectedFlightMulti1 = $scope.finalData[$index];
+          selectedFlightMulti.push(selectedFlightMulti1);
           // $state.go('menu.flightconfirmation');
           if(resultDataMulti2.length != 0){
             $state.go('menu.flightdetailsmulti2')
           }
           else {
-            console.log('Success');
+           $state.go('menu.flightconfirmationMulti');
           }
         }
         $scope.toggleGroup = function(group) {
@@ -510,9 +513,8 @@ app.controller('FlightDetailMultiController2', function($scope, $ionicSideMenuDe
         $scope.finalData = resultDataMulti2;
         $scope.toConfirm = function($index){
           selectedFlightMulti2 = $scope.finalData[$index];
-          
-          // $state.go('menu.userdetails');
-          console.log('Success');
+          selectedFlightMulti.push(selectedFlightMulti2);
+          $state.go('menu.flightconfirmationMulti');
         }
         $scope.toggleGroup = function(group) {
     if ($scope.isGroupShown(group)) {
@@ -535,6 +537,15 @@ app.controller('FlightConfirmationController', function($scope, $ionicSideMenuDe
       }
     })
 //Flight Confirmation Controller End
+//Flight COnfrimation Multi Controller
+app.controller('FlightConfirmationMultiController', function($scope, $ionicSideMenuDelegate, $state) {
+      $scope.selectedFlight = selectedFlightMulti;
+      console.log($scope.selectedFlight);
+      $scope.toUserDetails = function(){
+        $state.go('menu.userdetails');
+      }
+    })
+//Flight Confirmation Multi Controller End
 
 //User Details Controller
 app.controller('UserDetailsController', function($scope, $ionicSideMenuDelegate, $state, $http) {
@@ -1074,7 +1085,13 @@ $.ajax(getFlightData).done(function(response){
 
     }//Flight data ends
     $scope.flightDetailsMulti = function(){
-      $state.go('menu.flightdetailsmulti0');
+     if(resultDataMulti0.length == 0){
+      alert("Enter atleast one location to proceed");
+     }
+     else {
+       $state.go('menu.flightdetailsmulti0');
+     }
+      
 
 }//function on the button ends here
 

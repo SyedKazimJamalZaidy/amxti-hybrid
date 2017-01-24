@@ -122,6 +122,16 @@ var app = angular.module('demo', ['ionic', 'ngMessages'])
                     }
                 }
             })
+            //Flight confirmation page
+            .state('menu.flightconfirmationMulti',{
+                url: '/flightconfirmationMulti',
+                views: {
+                    'view-content' : {
+                        templateUrl: 'templates/flightconfirmationMulti.html',
+                        controller: 'FlightConfirmationMultiController'
+                    }
+                }
+            })
             //User Details Page
             .state('menu.userdetails',{
                 url: '/userdetails',
