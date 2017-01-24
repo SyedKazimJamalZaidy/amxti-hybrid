@@ -63,6 +63,36 @@ var app = angular.module('demo', ['ionic', 'ngMessages'])
                     }
                 }
             })
+            //Flight details for multi city
+            .state('menu.flightdetailsmulti0',{
+                url: '/flightdetailsmulti0',
+                views: {
+                    'view-content': {
+                    templateUrl: 'templates/flightdetailsmulti0.html',
+                    controller: 'FlightDetailMultiController0'
+                    }
+                }
+            })
+            //Flight details for multi city
+            .state('menu.flightdetailsmulti1',{
+                url: '/flightdetailsmulti1',
+                views: {
+                    'view-content': {
+                    templateUrl: 'templates/flightdetailsmulti1.html',
+                    controller: 'FlightDetailMultiController1'
+                    }
+                }
+            })
+            //Flight details for multi city
+            .state('menu.flightdetailsmulti2',{
+                url: '/flightdetailsmulti2',
+                views: {
+                    'view-content': {
+                    templateUrl: 'templates/flightdetailsmulti2.html',
+                    controller: 'FlightDetailMultiController2'
+                    }
+                }
+            })
              //Flight Details after selection of tour
             .state('menu.flightdetails',{
                 url: '/flightdetails',

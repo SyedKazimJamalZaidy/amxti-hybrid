@@ -7,6 +7,12 @@ var selectedFlight;
 var securityToken; //Security Token received from Sabre
 var airlineCodeFinal = ""; //for flight preferences
 var passengerUniqueId;//PNR
+var resultDataMulti0 = []; //First location result
+var resultDataMulti1= []; //Second location result
+var resultDataMulti2= []; //Third location result
+var selectedFlightMulti0; //Selected Flights for multi city
+var selectedFlightMulti1; //Selected Flights for multi city
+var selectedFlightMulti2; //Selected Flights for multi city
 app.controller('MenuController', function($scope, $ionicSideMenuDelegate) {
       $scope.toggleLeft = function() {
         $ionicSideMenuDelegate.toggleLeft();
@@ -441,6 +447,83 @@ app.controller('FlightDetailController', function($scope, $ionicSideMenuDelegate
     })
 //FLight Detail Controller End
 
+//Flight Detail Multi Controller
+app.controller('FlightDetailMultiController0', function($scope, $ionicSideMenuDelegate, $state) {
+  
+        $scope.finalData = resultDataMulti0;
+        $scope.toConfirm = function($index){
+          selectedFlightMulti0 = $scope.finalData[$index];
+          // $state.go('menu.flightconfirmation');
+          if(resultDataMulti1.length != 0){
+            $state.go('menu.flightdetailsmulti1')
+          }
+          else {
+            console.log('Success');
+          }
+        }
+        $scope.toggleGroup = function(group) {
+    if ($scope.isGroupShown(group)) {
+      $scope.shownGroup = null;
+    } else {
+      $scope.shownGroup = group;
+    }
+  };
+  $scope.isGroupShown = function(group) {
+    return $scope.shownGroup === group;
+  };
+    })
+//FLight Detail Multi Controller End
+
+//Flight Detail Multi Controller
+app.controller('FlightDetailMultiController1', function($scope, $ionicSideMenuDelegate, $state) {
+  
+       $scope.finalData = resultDataMulti1;
+        $scope.toConfirm = function($index){
+          selectedFlightMulti1 = $scope.finalData[$index];
+          // $state.go('menu.flightconfirmation');
+          if(resultDataMulti2.length != 0){
+            $state.go('menu.flightdetailsmulti2')
+          }
+          else {
+            console.log('Success');
+          }
+        }
+        $scope.toggleGroup = function(group) {
+    if ($scope.isGroupShown(group)) {
+      $scope.shownGroup = null;
+    } else {
+      $scope.shownGroup = group;
+    }
+  };
+  $scope.isGroupShown = function(group) {
+    return $scope.shownGroup === group;
+  };
+    })
+//FLight Detail Multi Controller End
+
+//Flight Detail Multi Controller
+app.controller('FlightDetailMultiController2', function($scope, $ionicSideMenuDelegate, $state) {
+  
+        $scope.finalData = resultDataMulti2;
+        $scope.toConfirm = function($index){
+          selectedFlightMulti2 = $scope.finalData[$index];
+          
+          // $state.go('menu.userdetails');
+          console.log('Success');
+        }
+        $scope.toggleGroup = function(group) {
+    if ($scope.isGroupShown(group)) {
+      $scope.shownGroup = null;
+    } else {
+      $scope.shownGroup = group;
+    }
+  };
+  $scope.isGroupShown = function(group) {
+    return $scope.shownGroup === group;
+  };
+    })
+//FLight Detail Multi Controller End
+
 //Flight COnfrimation Controller
 app.controller('FlightConfirmationController', function($scope, $ionicSideMenuDelegate, $state) {
       $scope.selectedFlight = selectedFlight;
@@ -583,13 +666,14 @@ app.controller('PaymentMethodController', function($scope, $ionicSideMenuDelegat
 //Payment Method Controller End
 
 //MultiCity Controller
-app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $http) {
+app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $http, $state) {
       
       //Addind/Removing Flights
       $scope.inputs = [{value: null}];
+
       $scope.addMore = function(index){
         var limit = index + 2;
-        if(limit <= 4){
+        if(limit <= 3){
           $scope.inputs.push({value: null});
         }
         else {
@@ -612,7 +696,7 @@ app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $
       }).then(function(response){
 
       $scope.airlineInfo = response.data.AirlineInfo;
-      var airlineInfo = $scope.airlineInfo;
+      airlineInfo = $scope.airlineInfo;
       
       var airlineName = [];
 
@@ -621,7 +705,6 @@ app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $
       }
       $scope.airlineName = airlineName; 
     });
-
 
     // Getting list of Airports
     $http({
@@ -636,11 +719,361 @@ app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $
           destinationName.push(result[i].label);
           destinationIATA.push(result[i].id);
       }
-      $("#from").autocomplete({
+
+      $("#from0").autocomplete({
         source: destinationName
       })
-      $("#to").autocomplete({
+      $("#to0").autocomplete({
         source: destinationName
       })
+
+       $("#from1").autocomplete({
+        source: destinationName
+      })
+        $("#to1").autocomplete({
+        source: destinationName
+      })
+
+
+        $("#from2").autocomplete({
+        source: destinationName
+      })
+         $("#to2").autocomplete({
+        source: destinationName
+      })
+
     });
+
+    //Authenticating for token
+    var auth = {
+  "async": true,
+  "crossDomain": true,
+  "url": "https://webservices-as.havail.sabre.com/",
+  "method": "POST",
+  "headers": {
+    "content-type": "text/xml",
+    "cache-control": "no-cache",
+    
+  },
+  "data":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\t\t<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:eb=\"http://www.ebxml.org/namespaces/messageHeader\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\">\r\n\t\t    <SOAP-ENV:Header>\r\n\t\t        <eb:MessageHeader SOAP-ENV:mustUnderstand=\"1\" eb:version=\"1.0\">\r\n\t\t            <eb:ConversationId>99999</eb:ConversationId>\r\n\t\t            <eb:From>\r\n\t\t                <eb:PartyId type=\"urn:x12.org:IO5:01\">999999</eb:PartyId>\r\n\t\t            </eb:From>\r\n\t\t            <eb:To>\r\n\t\t                <eb:PartyId type=\"urn:x12.org:IO5:01\">123123</eb:PartyId>\r\n\t\t            </eb:To>\r\n\t\t            <eb:CPAId>R7OI</eb:CPAId>\r\n\t\t            <eb:Service eb:type=\"OTA\">SessionCreateRQ</eb:Service>\r\n\t\t            <eb:Action>SessionCreateRQ</eb:Action>\r\n\t\t            <eb:MessageData>\r\n\t\t                <eb:MessageId>1000</eb:MessageId>\r\n\t\t                <eb:Timestamp>2001-02-15T11:15:12Z</eb:Timestamp>\r\n\t\t                <eb:TimeToLive>2001-02-15T11:15:12Z</eb:TimeToLive>\r\n\t\t            </eb:MessageData>\r\n\t\t        </eb:MessageHeader>\r\n\t\t        <wsse:Security xmlns:wsse=\"http://schemas.xmlsoap.org/ws/2002/12/secext\" xmlns:wsu=\"http://schemas.xmlsoap.org/ws/2002/12/utility\">\r\n\t\t            <wsse:UsernameToken> \r\n\t\t                <wsse:Username>595258</wsse:Username>\r\n\t\t                <wsse:Password>WS500917</wsse:Password>\r\n\t\t                <Organization>R7OI</Organization>\r\n\t\t                <Domain>DEFAULT</Domain> \r\n\t\t            </wsse:UsernameToken>\r\n\t\t        </wsse:Security>\r\n\t\t    </SOAP-ENV:Header>\r\n\t\t    <SOAP-ENV:Body>\r\n\t\t        <eb:Manifest SOAP-ENV:mustUnderstand=\"1\" eb:version=\"1.0\">\r\n\t\t            <eb:Reference xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"cid:rootelement\" xlink:type=\"simple\"/>\r\n\t\t        </eb:Manifest>\r\n\t\t    </SOAP-ENV:Body>\r\n\t\t</SOAP-ENV:Envelope>"
+}
+
+$.ajax(auth).done(function(response){
+  securityToken = response.getElementsByTagName("BinarySecurityToken")[0].childNodes[0].nodeValue;
+  })
+  
+    $scope.getFirstValue = function(){
+      var firstLocationfrom = document.getElementById("from0").value;
+      var firstLocationto = document.getElementById("to0").value;
+      var firstLocationdepartdate = document.getElementById("departDate0").value;
+      var airlineCode = document.getElementById("airlineCode");
+      var airlinesName = airlineCode.options[airlineCode.selectedIndex].value;
+       var adult = document.getElementById('adult').value;
+      var fromIATA0;
+      var toIATA0;
+
+      for (var i = 0; i < result.length; i++) {
+        if(firstLocationfrom == result[i].label)
+          {
+            fromIATA0 = result[i].id;
+            
+          }
+      }
+      for (var i = 0; i < result.length; i++) {
+        if(firstLocationto == result[i].label)
+          {
+            toIATA0 = result[i].id;
+            
+          }
+      }
+      for (var i = 0; i < airlineInfo.length; i++) {
+
+            if(airlinesName == airlineInfo[i].AirlineName){
+              
+              airlineCodeFinal = airlineInfo[i].AirlineCode;
+              
+            }
+          }
+     
+          
+          var flightPreference = '';
+          
+         if(airlineCodeFinal!=""){
+          
+          flightPreference = "<VendorPref Code=\""+airlineCodeFinal+"\" PreferLevel=\"Only\"/>";
+         }
+    var getFlightData = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://webservices-as.havail.sabre.com/",
+        "method": "POST",
+        "headers": {
+          "content-type": "text/xml",
+          "cache-control": "no-cache",
+          
+        },
+        "data": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n   <soapenv:Header>\r\n      <MessageHeader xmlns=\"http://www.ebxml.org/namespaces/messageHeader\">\r\n         <From>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">CRS</PartyId>\r\n         </From>\r\n         <To>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">Sabre</PartyId>\r\n         </To>\r\n         <CPAId>R7OI</CPAId>\r\n         <ConversationId>9999</ConversationId>\r\n         <Service type=\"string\">Cruise</Service>\r\n         <Action>BargainFinderMaxRQ</Action>\r\n         <MessageData>\r\n            <MessageId>1426190858</MessageId>\r\n            <Timestamp>2015-03-12T02:07:38-06:00</Timestamp>\r\n            <TimeToLive>2015-03-12T03:07:38-06:00</TimeToLive>\r\n         </MessageData>\r\n      </MessageHeader>\r\n      <wsse:Security xmlns:wsse=\"http://schemas.xmlsoap.org/ws/2002/12/secext\" xmlns:wsu=\"http://schemas.xmlsoap.org/ws/2002/12/utility\">\r\n           <wsse:BinarySecurityToken  valueType=\"String\" EncodingType=\"wsse:Base64Binary\">"+securityToken+"</wsse:BinarySecurityToken>\r\n      </wsse:Security>\r\n   </soapenv:Header>\r\n   <soapenv:Body>\r\n   \r\n   <OTA_AirLowFareSearchRQ xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.opentravel.org/OTA/2003/05\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Target=\"Production\" Version=\"1.9.5\" ResponseType=\"OTA\" ResponseVersion=\"1.9.5\">\r\n    <POS>\r\n        <Source PseudoCityCode=\"R7OI\">\r\n        <RequestorID ID=\"1\" Type=\"1\">\r\n            <CompanyName Code=\"TN\" />\r\n        </RequestorID>\r\n        </Source>\r\n    </POS>\r\n    <OriginDestinationInformation RPH=\"1\">\r\n        <DepartureDateTime>"+firstLocationdepartdate+"T00:00:00</DepartureDateTime>\r\n        <OriginLocation LocationCode=\""+fromIATA0+"\" />\r\n        <DestinationLocation LocationCode=\""+toIATA0+"\" />\r\n\t\t\r\n        <TPA_Extensions>\r\n            <SegmentType Code=\"O\" />\r\n        </TPA_Extensions>\r\n\t\t\r\n    </OriginDestinationInformation>\r\n    \r\n    \r\n  <TravelPreferences ValidInterlineTicket=\"true\">\r\n"+flightPreference+"\
+        <CabinPref PreferLevel=\"Preferred\" Cabin=\"Y\" />\
+        <TPA_Extensions>\
+            <TripType Value=\"Return\" />\
+            <LongConnectTime Min=\"0\" Max=\"999\" Enable=\"true\" />\
+            <ExcludeCallDirectCarriers Enabled=\"true\" />\
+        </TPA_Extensions>\
+    </TravelPreferences>  <TravelerInfoSummary>\r\n        <SeatsRequested>1</SeatsRequested>\r\n        <AirTravelerAvail>\r\n            \t<PassengerTypeQuantity Code=\"ADT\" Quantity= \""+adult+"\" />\r\n\t\t\t \r\n        </AirTravelerAvail>\r\n    </TravelerInfoSummary>\r\n    <TPA_Extensions>\r\n        <IntelliSellTransaction>\r\n            <RequestType Name=\"50ITINS\" />\r\n        </IntelliSellTransaction>\r\n    </TPA_Extensions>\r\n</OTA_AirLowFareSearchRQ>\r\n\r\n    </soapenv:Body>\r\n</soapenv:Envelope>"
+}
+//Making AJAX Request for data of flights
+$.ajax(getFlightData).done(function(response){
+      var pricedItineraries = response.getElementsByTagName("PricedItineraries")[0].childNodes;
+
+        for (var i = 0; i < pricedItineraries.length; i++) {
+          
+          var totalFare = pricedItineraries[i].getElementsByTagName("ItinTotalFare")[0].getElementsByTagName("TotalFare")[0].getAttribute("Amount");
+          
+          var originDestinationOptions = pricedItineraries[i].getElementsByTagName("AirItinerary")[0].getElementsByTagName("OriginDestinationOptions")[0];
+          
+          var tempArray = [];
+          for (var j = 0; j < originDestinationOptions.childNodes.length; j++) {
+            var originDestinationOption = originDestinationOptions.childNodes[j].childNodes;
+            
+            for (var k = 0; k < originDestinationOption.length; k++) {
+            
+              
+              var departureAirport = originDestinationOption[k].getElementsByTagName("DepartureAirport")[0].getAttribute("LocationCode");
+              var departureDateTime = originDestinationOption[k].getAttribute("DepartureDateTime");
+              var arrivalAirport = originDestinationOption[k].getElementsByTagName("ArrivalAirport")[0].getAttribute("LocationCode");
+              
+              var elapsedTime = originDestinationOption[k].getAttribute("ElapsedTime");
+              var flightNumber = originDestinationOption[k].getAttribute("FlightNumber");
+              var flightCode = originDestinationOption[k].getElementsByTagName("MarketingAirline")[0].getAttribute("Code");
+
+              var res1 = departureDateTime.split("T");
+              var departureDate = res1[0];
+              var departureTime = res1[1];
+              
+
+              var resultObj = {departureAirport, departureDate, departureTime, arrivalAirport, elapsedTime, totalFare, flightCode, flightNumber};
+              tempArray.push(resultObj);
+              
+            }
+            
+          }
+          resultDataMulti0.push(tempArray);
+          
+        }
+        console.log(resultDataMulti0);
     })
+
+    }//Flight data ends
+
+    $scope.getSecondValue = function(){
+      var secondLocationfrom = document.getElementById("from1").value;
+      var secondLocationto = document.getElementById("to1").value;
+      var secondLocationdepartdate = document.getElementById("departDate1").value;
+      var airlineCode = document.getElementById("airlineCode");
+      var airlinesName = airlineCode.options[airlineCode.selectedIndex].value;
+       var adult = document.getElementById('adult').value;
+      var fromIATA1;
+      var toIATA1;
+
+      for (var i = 0; i < result.length; i++) {
+        if(secondLocationfrom == result[i].label)
+          {
+            fromIATA1 = result[i].id;
+            
+          }
+      }
+      for (var i = 0; i < result.length; i++) {
+        if(secondLocationto == result[i].label)
+          {
+            toIATA1 = result[i].id;
+            
+          }
+      }
+      for (var i = 0; i < airlineInfo.length; i++) {
+
+            if(airlinesName == airlineInfo[i].AirlineName){
+              
+              airlineCodeFinal = airlineInfo[i].AirlineCode;
+              
+            }
+          }
+     
+          
+          var flightPreference = '';
+          
+         if(airlineCodeFinal!=""){
+          
+          flightPreference = "<VendorPref Code=\""+airlineCodeFinal+"\" PreferLevel=\"Only\"/>";
+         }
+    var getFlightData = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://webservices-as.havail.sabre.com/",
+        "method": "POST",
+        "headers": {
+          "content-type": "text/xml",
+          "cache-control": "no-cache",
+          
+        },
+        "data": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n   <soapenv:Header>\r\n      <MessageHeader xmlns=\"http://www.ebxml.org/namespaces/messageHeader\">\r\n         <From>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">CRS</PartyId>\r\n         </From>\r\n         <To>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">Sabre</PartyId>\r\n         </To>\r\n         <CPAId>R7OI</CPAId>\r\n         <ConversationId>9999</ConversationId>\r\n         <Service type=\"string\">Cruise</Service>\r\n         <Action>BargainFinderMaxRQ</Action>\r\n         <MessageData>\r\n            <MessageId>1426190858</MessageId>\r\n            <Timestamp>2015-03-12T02:07:38-06:00</Timestamp>\r\n            <TimeToLive>2015-03-12T03:07:38-06:00</TimeToLive>\r\n         </MessageData>\r\n      </MessageHeader>\r\n      <wsse:Security xmlns:wsse=\"http://schemas.xmlsoap.org/ws/2002/12/secext\" xmlns:wsu=\"http://schemas.xmlsoap.org/ws/2002/12/utility\">\r\n           <wsse:BinarySecurityToken  valueType=\"String\" EncodingType=\"wsse:Base64Binary\">"+securityToken+"</wsse:BinarySecurityToken>\r\n      </wsse:Security>\r\n   </soapenv:Header>\r\n   <soapenv:Body>\r\n   \r\n   <OTA_AirLowFareSearchRQ xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.opentravel.org/OTA/2003/05\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Target=\"Production\" Version=\"1.9.5\" ResponseType=\"OTA\" ResponseVersion=\"1.9.5\">\r\n    <POS>\r\n        <Source PseudoCityCode=\"R7OI\">\r\n        <RequestorID ID=\"1\" Type=\"1\">\r\n            <CompanyName Code=\"TN\" />\r\n        </RequestorID>\r\n        </Source>\r\n    </POS>\r\n    <OriginDestinationInformation RPH=\"1\">\r\n        <DepartureDateTime>"+secondLocationdepartdate+"T00:00:00</DepartureDateTime>\r\n        <OriginLocation LocationCode=\""+fromIATA1+"\" />\r\n        <DestinationLocation LocationCode=\""+toIATA1+"\" />\r\n\t\t\r\n        <TPA_Extensions>\r\n            <SegmentType Code=\"O\" />\r\n        </TPA_Extensions>\r\n\t\t\r\n    </OriginDestinationInformation>\r\n    \r\n    \r\n  <TravelPreferences ValidInterlineTicket=\"true\">\r\n"+flightPreference+"\
+        <CabinPref PreferLevel=\"Preferred\" Cabin=\"Y\" />\
+        <TPA_Extensions>\
+            <TripType Value=\"Return\" />\
+            <LongConnectTime Min=\"0\" Max=\"999\" Enable=\"true\" />\
+            <ExcludeCallDirectCarriers Enabled=\"true\" />\
+        </TPA_Extensions>\
+    </TravelPreferences>  <TravelerInfoSummary>\r\n        <SeatsRequested>1</SeatsRequested>\r\n        <AirTravelerAvail>\r\n            \t<PassengerTypeQuantity Code=\"ADT\" Quantity= \""+adult+"\" />\r\n\t\t\t \r\n        </AirTravelerAvail>\r\n    </TravelerInfoSummary>\r\n    <TPA_Extensions>\r\n        <IntelliSellTransaction>\r\n            <RequestType Name=\"50ITINS\" />\r\n        </IntelliSellTransaction>\r\n    </TPA_Extensions>\r\n</OTA_AirLowFareSearchRQ>\r\n\r\n    </soapenv:Body>\r\n</soapenv:Envelope>"
+}
+//Making AJAX Request for data of flights
+$.ajax(getFlightData).done(function(response){
+      var pricedItineraries = response.getElementsByTagName("PricedItineraries")[0].childNodes;
+
+        for (var i = 0; i < pricedItineraries.length; i++) {
+          
+          var totalFare = pricedItineraries[i].getElementsByTagName("ItinTotalFare")[0].getElementsByTagName("TotalFare")[0].getAttribute("Amount");
+          
+          var originDestinationOptions = pricedItineraries[i].getElementsByTagName("AirItinerary")[0].getElementsByTagName("OriginDestinationOptions")[0];
+          
+          var tempArray = [];
+          for (var j = 0; j < originDestinationOptions.childNodes.length; j++) {
+            var originDestinationOption = originDestinationOptions.childNodes[j].childNodes;
+            
+            for (var k = 0; k < originDestinationOption.length; k++) {
+            
+              
+              var departureAirport = originDestinationOption[k].getElementsByTagName("DepartureAirport")[0].getAttribute("LocationCode");
+              var departureDateTime = originDestinationOption[k].getAttribute("DepartureDateTime");
+              var arrivalAirport = originDestinationOption[k].getElementsByTagName("ArrivalAirport")[0].getAttribute("LocationCode");
+              
+              var elapsedTime = originDestinationOption[k].getAttribute("ElapsedTime");
+              var flightNumber = originDestinationOption[k].getAttribute("FlightNumber");
+              var flightCode = originDestinationOption[k].getElementsByTagName("MarketingAirline")[0].getAttribute("Code");
+
+              var res1 = departureDateTime.split("T");
+              var departureDate = res1[0];
+              var departureTime = res1[1];
+              
+
+              var resultObj = {departureAirport, departureDate, departureTime, arrivalAirport, elapsedTime, totalFare, flightCode, flightNumber};
+              tempArray.push(resultObj);
+              
+            }
+            
+          }
+          resultDataMulti1.push(tempArray);
+          
+        }
+        console.log(resultDataMulti1);
+    })
+
+    }//Flight data ends
+
+    $scope.getThirdValue = function(){
+      var thirdLocationfrom = document.getElementById("from2").value;
+      var thirdLocationto = document.getElementById("to2").value;
+      var thirdLocationdepartdate = document.getElementById("departDate2").value;
+      var airlineCode = document.getElementById("airlineCode");
+      var airlinesName = airlineCode.options[airlineCode.selectedIndex].value;
+       var adult = document.getElementById('adult').value;
+      var fromIATA2;
+      var toIATA2;
+
+      for (var i = 0; i < result.length; i++) {
+        if(thirdLocationfrom == result[i].label)
+          {
+            fromIATA2 = result[i].id;
+            
+          }
+      }
+      for (var i = 0; i < result.length; i++) {
+        if(thirdLocationto == result[i].label)
+          {
+            toIATA2 = result[i].id;
+            
+          }
+      }
+      for (var i = 0; i < airlineInfo.length; i++) {
+
+            if(airlinesName == airlineInfo[i].AirlineName){
+              
+              airlineCodeFinal = airlineInfo[i].AirlineCode;
+              
+            }
+          }
+     
+          
+          var flightPreference = '';
+          
+         if(airlineCodeFinal!=""){
+          
+          flightPreference = "<VendorPref Code=\""+airlineCodeFinal+"\" PreferLevel=\"Only\"/>";
+         }
+    var getFlightData = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://webservices-as.havail.sabre.com/",
+        "method": "POST",
+        "headers": {
+          "content-type": "text/xml",
+          "cache-control": "no-cache",
+          
+        },
+        "data": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n   <soapenv:Header>\r\n      <MessageHeader xmlns=\"http://www.ebxml.org/namespaces/messageHeader\">\r\n         <From>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">CRS</PartyId>\r\n         </From>\r\n         <To>\r\n            <PartyId type=\"urn:x12.org:IO5:01\">Sabre</PartyId>\r\n         </To>\r\n         <CPAId>R7OI</CPAId>\r\n         <ConversationId>9999</ConversationId>\r\n         <Service type=\"string\">Cruise</Service>\r\n         <Action>BargainFinderMaxRQ</Action>\r\n         <MessageData>\r\n            <MessageId>1426190858</MessageId>\r\n            <Timestamp>2015-03-12T02:07:38-06:00</Timestamp>\r\n            <TimeToLive>2015-03-12T03:07:38-06:00</TimeToLive>\r\n         </MessageData>\r\n      </MessageHeader>\r\n      <wsse:Security xmlns:wsse=\"http://schemas.xmlsoap.org/ws/2002/12/secext\" xmlns:wsu=\"http://schemas.xmlsoap.org/ws/2002/12/utility\">\r\n           <wsse:BinarySecurityToken  valueType=\"String\" EncodingType=\"wsse:Base64Binary\">"+securityToken+"</wsse:BinarySecurityToken>\r\n      </wsse:Security>\r\n   </soapenv:Header>\r\n   <soapenv:Body>\r\n   \r\n   <OTA_AirLowFareSearchRQ xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.opentravel.org/OTA/2003/05\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Target=\"Production\" Version=\"1.9.5\" ResponseType=\"OTA\" ResponseVersion=\"1.9.5\">\r\n    <POS>\r\n        <Source PseudoCityCode=\"R7OI\">\r\n        <RequestorID ID=\"1\" Type=\"1\">\r\n            <CompanyName Code=\"TN\" />\r\n        </RequestorID>\r\n        </Source>\r\n    </POS>\r\n    <OriginDestinationInformation RPH=\"1\">\r\n        <DepartureDateTime>"+thirdLocationdepartdate+"T00:00:00</DepartureDateTime>\r\n        <OriginLocation LocationCode=\""+fromIATA2+"\" />\r\n        <DestinationLocation LocationCode=\""+toIATA2+"\" />\r\n\t\t\r\n        <TPA_Extensions>\r\n            <SegmentType Code=\"O\" />\r\n        </TPA_Extensions>\r\n\t\t\r\n    </OriginDestinationInformation>\r\n    \r\n    \r\n  <TravelPreferences ValidInterlineTicket=\"true\">\r\n"+flightPreference+"\
+        <CabinPref PreferLevel=\"Preferred\" Cabin=\"Y\" />\
+        <TPA_Extensions>\
+            <TripType Value=\"Return\" />\
+            <LongConnectTime Min=\"0\" Max=\"999\" Enable=\"true\" />\
+            <ExcludeCallDirectCarriers Enabled=\"true\" />\
+        </TPA_Extensions>\
+    </TravelPreferences>  <TravelerInfoSummary>\r\n        <SeatsRequested>1</SeatsRequested>\r\n        <AirTravelerAvail>\r\n            \t<PassengerTypeQuantity Code=\"ADT\" Quantity= \""+adult+"\" />\r\n\t\t\t \r\n        </AirTravelerAvail>\r\n    </TravelerInfoSummary>\r\n    <TPA_Extensions>\r\n        <IntelliSellTransaction>\r\n            <RequestType Name=\"50ITINS\" />\r\n        </IntelliSellTransaction>\r\n    </TPA_Extensions>\r\n</OTA_AirLowFareSearchRQ>\r\n\r\n    </soapenv:Body>\r\n</soapenv:Envelope>"
+}
+//Making AJAX Request for data of flights
+$.ajax(getFlightData).done(function(response){
+      var pricedItineraries = response.getElementsByTagName("PricedItineraries")[0].childNodes;
+
+        for (var i = 0; i < pricedItineraries.length; i++) {
+          
+          var totalFare = pricedItineraries[i].getElementsByTagName("ItinTotalFare")[0].getElementsByTagName("TotalFare")[0].getAttribute("Amount");
+          
+          var originDestinationOptions = pricedItineraries[i].getElementsByTagName("AirItinerary")[0].getElementsByTagName("OriginDestinationOptions")[0];
+          
+          var tempArray = [];
+          for (var j = 0; j < originDestinationOptions.childNodes.length; j++) {
+            var originDestinationOption = originDestinationOptions.childNodes[j].childNodes;
+            
+            for (var k = 0; k < originDestinationOption.length; k++) {
+            
+              
+              var departureAirport = originDestinationOption[k].getElementsByTagName("DepartureAirport")[0].getAttribute("LocationCode");
+              var departureDateTime = originDestinationOption[k].getAttribute("DepartureDateTime");
+              var arrivalAirport = originDestinationOption[k].getElementsByTagName("ArrivalAirport")[0].getAttribute("LocationCode");
+              
+              var elapsedTime = originDestinationOption[k].getAttribute("ElapsedTime");
+              var flightNumber = originDestinationOption[k].getAttribute("FlightNumber");
+              var flightCode = originDestinationOption[k].getElementsByTagName("MarketingAirline")[0].getAttribute("Code");
+
+              var res1 = departureDateTime.split("T");
+              var departureDate = res1[0];
+              var departureTime = res1[1];
+              
+
+              var resultObj = {departureAirport, departureDate, departureTime, arrivalAirport, elapsedTime, totalFare, flightCode, flightNumber};
+              tempArray.push(resultObj);
+              
+            }
+            
+          }
+          resultDataMulti2.push(tempArray);
+          
+        }
+        console.log(resultDataMulti2);
+    })
+
+    }//Flight data ends
+    $scope.flightDetailsMulti = function(){
+      $state.go('menu.flightdetailsmulti0');
+
+}//function on the button ends here
+
+
+});

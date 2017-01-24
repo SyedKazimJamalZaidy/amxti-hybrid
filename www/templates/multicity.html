@@ -5,34 +5,75 @@
 </ion-nav-buttons>
 	<ion-content has-subheader="false" class="padding">
     <form name="roundForm" novalidate>
-              <div class="list" ng-repeat="input in inputs">
+              <div class="list" >
               
                   <label class="item item-input item-stacked-label">
                     <span class="input-label">From</span>
-                    <input type="text" placeholder="Jinnah International Airport" ng-model="input.from" id="from">
+                    <input type="text" placeholder="Jinnah International Airport" id="from0">
                   </label>
                   <label class="item item-input item-stacked-label">
                     <span class="input-label">To</span>
-                    <input type="text" placeholder="Allama Iqbal International Airport" ng-model="input.to" id="to">
+                    <input type="text" placeholder="Allama Iqbal International Airport" id="to0">
                   </label>
                   <label class="item item-input item-stacked-label">
                     <span class="input-label">Departure Date</span>
-                    <input type="date" id="departDate" name="departDate" ng-model="input.departDate" id="departDate">
+                    <input type="date" id="departDate0">
                   </label>
-                  <label class="item item-input item-stacked-label">
-                    <span class="input-label">Arrival Date</span>
-                    <input type="date" id="arrDate" name="arrDate" ng-model="input.arrDate" id="arrDate">
                   </label>
                   <div class="item item-divider">
-                    <button class="button button-assertive button-small ion-plus-round" ng-if="$index == inputs.length - 1" ng-click="addMore($index)"> Add more locations</button>
-                     <button class="button button-assertive button-small ion-plus-round" ng-if="$index != inputs.length - 1" ng-click="removeMore()"> Delete locations</button>
+                    <button class="button button-assertive button-small ion-plus-round" ng-click="form1=true"> Add more locations</button>
+                     <button class="button button-assertive button-small ion-plus-round" ng-click="form1=false"> Delete locations</button>
+                     <button class="button button-balanced button-small ion-checkmark" ng-click="getFirstValue()"> Lock flight</button>
                   </div>
                 </div>
+
+
+            <div class="list" ng-show="form1">
+              
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label">From</span>
+                    <input type="text" placeholder="Jinnah International Airport" id="from1">
+                  </label>
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label">To</span>
+                    <input type="text" placeholder="Allama Iqbal International Airport" id="to1">
+                  </label>
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label">Departure Date</span>
+                    <input type="date" id="departDate1">
+                  </label>
+              
+                  <div class="item item-divider">
+                    <button class="button button-assertive button-small ion-plus-round" ng-click="form2=true"> Add more locations</button>
+                     <button class="button button-assertive button-small ion-plus-round" ng-click="form2=false"> Delete locations</button>
+                     <button class="button button-balanced button-small ion-checkmark" ng-click="getSecondValue()"> Lock flight</button>
+                  </div>
+                </div>                
+
+                 <div class="list" ng-show="form2">
+              
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label">From</span>
+                    <input type="text" placeholder="Jinnah International Airport"  id="from2">
+                  </label>
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label">To</span>
+                    <input type="text" placeholder="Allama Iqbal International Airport" id="to2">
+                  </label>
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label">Departure Date</span>
+                    <input type="date"  id="departDate2">
+                  </label>
+                  <div class="item item-divider">
+                    <button class="button button-balanced button-small ion-checkmark" ng-click="getThirdValue()"> Lock flight</button>
+                  </div>
+                 
+                </div>                
                 <div class="row">
                   <div class="col">
                     <label class="item item-input item-stacked-label">
                       <span class="input-label">Adults</span>
-                      <input type="number" placeholder="0">
+                      <input type="number" placeholder="0" id="adult" value="1">
                     </label>
                   </div>
                   <div class="col">
@@ -52,12 +93,13 @@
                   <div class="input-label">
                     Preffered Flight
                   </div>
-                  <select>
+                  <select id="airlineCode">
+                  <option> </option>
                     <option ng-repeat="names in airlineName">{{names}}</option>
                   </select>
                 </label>
               </div>
-                <a class="button button-block button-positive" ng-click="flightDetails()" ng-disabled="roundForm.$invalid">
+                <a class="button button-block button-positive" ng-click="flightDetailsMulti()" ng-disabled="roundForm.$invalid">
                   Proceed
                 </a>
               </form>
