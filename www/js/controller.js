@@ -1,7 +1,7 @@
 var resultData = [];//result of flights coming from Sabre api
-var destinationName = []; //destination name coming from solude.amxti server
-var destinationIATA = []; //IATA name coming from solude.amxti server
-var result; //Response result of Airports from solude amxti
+// var destinationName = []; //destination name coming from solude.amxti server
+// var destinationIATA = []; //IATA name coming from solude.amxti server
+var result=[]; //Response result of Airports from solude amxti
 var airlineInfo; //Response result of Airlines
 var selectedFlightMulti =[]; //for multi city
 var selectedFlight; //for round and single trip
@@ -76,6 +76,8 @@ app.controller('LoginController', function($scope, $ionicSideMenuDelegate, $stat
 
 // Flights Controller RoundTrip
 .controller('RoundController', function($scope, $http, $state,$ionicSideMenuDelegate) {
+  var destinationName= [];
+  var destinationIATA = [];
   $scope.whichClassToUse = function(someValue){
     someValue = ionic.Platform.platform();
     if(someValue == "android"){
@@ -239,7 +241,9 @@ $.ajax(auth).done(function(response){
       }
       $scope.airlineName = airlineName; 
     });
+      
     // Getting list of Airports
+    if(result.length == 0){
     $http({
       method: "GET",
       url: "js/airports.json",
@@ -259,12 +263,27 @@ $.ajax(auth).done(function(response){
         source: destinationName
       })
     });
+  }
+  else {
+    for (var i = 0; i < result.length; i++) {
+          destinationName.push(result[i].label);
+          destinationIATA.push(result[i].id);
+      }
+       $("#from").autocomplete({
+        source: destinationName
+      })
+      $("#to").autocomplete({
+        source: destinationName
+      })
+  }
 })
 // Flights Controller End
 
 
 // Single Trip Controller
 .controller('SingleController', function($scope, $http, $state,$ionicSideMenuDelegate) {
+  var destinationName= [];
+  var destinationIATA = [];
   $scope.whichClassToUse = function(someValue){
     someValue = ionic.Platform.platform();
     if(someValue == "android"){
@@ -272,8 +291,8 @@ $.ajax(auth).done(function(response){
     }
  }
     $scope.flightDetails = function(){
-      var from = document.getElementById("from").value;
-      var to = document.getElementById("to").value;
+      var fromSingle = document.getElementById("from").value;
+      var toSingle = document.getElementById("to").value;
       var departDate = document.getElementById('departDate').value;
       var adult = document.getElementById('adult').value;
       var airlineCode = document.getElementById("airlineCode");
@@ -282,7 +301,7 @@ $.ajax(auth).done(function(response){
       var fromIATA;
       var toIATA;
       for (var i = 0; i < result.length; i++) {
-        if(from == result[i].label)
+        if(fromSingle == result[i].label)
           {
             fromIATA = result[i].id;
             
@@ -290,7 +309,7 @@ $.ajax(auth).done(function(response){
       }
 
       for (var i = 0; i < result.length; i++) {
-        if(to == result[i].label)
+        if(toSingle == result[i].label)
           {
             toIATA = result[i].id;
             
@@ -428,7 +447,8 @@ $.ajax(auth).done(function(response){
       }
       $scope.airlineName = airlineName; 
     });
-    // Getting list of Airports
+   // Getting list of Airports
+    if(result.length == 0){
     $http({
       method: "GET",
       url: "js/airports.json",
@@ -441,13 +461,26 @@ $.ajax(auth).done(function(response){
           destinationName.push(result[i].label);
           destinationIATA.push(result[i].id);
       }
-      $("#from").autocomplete({
+      $("#fromSingle").autocomplete({
         source: destinationName
       })
-      $("#to").autocomplete({
+      $("#toSingle").autocomplete({
         source: destinationName
       })
     });
+  }
+  else {
+    for (var i = 0; i < result.length; i++) {
+          destinationName.push(result[i].label);
+          destinationIATA.push(result[i].id);
+      }
+       $("#fromSingle").autocomplete({
+        source: destinationName
+      })
+      $("#toSingle").autocomplete({
+        source: destinationName
+      })
+  }
 })
 //Single Flights Controller End
 
@@ -702,6 +735,8 @@ app.controller('PaymentMethodController', function($scope, $ionicSideMenuDelegat
 
 //MultiCity Controller
 app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $http, $state) {
+  var destinationName= [];
+  var destinationIATA = [];
       $scope.whichClassToUse = function(someValue){
     someValue = ionic.Platform.platform();
     if(someValue == "android"){
@@ -731,6 +766,8 @@ app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $
     });
 
     // Getting list of Airports
+    if(result.length == 0){
+      
     $http({
       method: "GET",
       url: "js/airports.json",
@@ -765,8 +802,38 @@ app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $
          $("#to2").autocomplete({
         source: destinationName
       })
+         });
+}
 
-    });
+    
+else {
+  for (var i = 0; i < result.length; i++) {
+          destinationName.push(result[i].label);
+          destinationIATA.push(result[i].id);
+      }
+
+      $("#from0").autocomplete({
+        source: destinationName
+      })
+      $("#to0").autocomplete({
+        source: destinationName
+      })
+
+       $("#from1").autocomplete({
+        source: destinationName
+      })
+        $("#to1").autocomplete({
+        source: destinationName
+      })
+
+
+        $("#from2").autocomplete({
+        source: destinationName
+      })
+         $("#to2").autocomplete({
+        source: destinationName
+      })
+}
 
     //Authenticating for token
     var auth = {
