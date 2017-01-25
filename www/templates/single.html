@@ -4,17 +4,17 @@
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
       </ion-nav-buttons>
 
-      <ion-content has-subheader="false">
+      <ion-content has-subheader="false" ng-class="whichClassToUse(call.State)">
       <form name="singleform">
               <div class="list">
                 <label class="item item-input item-stacked-label">
                   <span class="input-label">From</span>
-                  <input type="text" placeholder="Jinnah International Airport" id="from" name="from" ng-model="from" required>
+                  <input type="text" placeholder="Select departure airport" id="from" name="from" ng-model="from" required>
                 </label>
                  <div class="linespace"></div>
                 <label class="item item-input item-stacked-label">
                   <span class="input-label">To</span>
-                  <input type="text" placeholder="Allama Iqbal International Airport" id="to" name="to" ng-model="to" required>
+                  <input type="text" placeholder="Select arrival airport" id="to" name="to" ng-model="to" required>
                 </label>
                  <div class="linespace"></div>
                 <label class="item item-input item-stacked-label">

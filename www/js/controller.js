@@ -20,6 +20,9 @@ app.controller('MenuController', function($scope, $ionicSideMenuDelegate) {
       };
     })
 
+app.controller('HomePageController', function($scope, $ionicSideMenuDelegate) {
+  console.log('Kazim');
+    })
 
 app.controller('Controller', function($scope, $ionicSideMenuDelegate) {
     })
@@ -73,6 +76,12 @@ app.controller('LoginController', function($scope, $ionicSideMenuDelegate, $stat
 
 // Flights Controller RoundTrip
 .controller('RoundController', function($scope, $http, $state,$ionicSideMenuDelegate) {
+  $scope.whichClassToUse = function(someValue){
+    someValue = ionic.Platform.platform();
+    if(someValue == "android"){
+      return "has-tabs-top"
+    }
+  }
     $scope.flightDetails = function(){
       var from = document.getElementById("from").value;
       var to = document.getElementById("to").value;
@@ -107,11 +116,14 @@ app.controller('LoginController', function($scope, $ionicSideMenuDelegate, $stat
           airlineCodeFinal = airlineInfo[i].AirlineCode;
           
         }
+        else {
+          airlineCodeFinal = "";
+        }
       }
      
           
       var flightPreference = '';
-      
+   
      if(airlineCodeFinal!=""){
       
       flightPreference = "<VendorPref Code=\""+airlineCodeFinal+"\" PreferLevel=\"Only\"/>";
@@ -253,6 +265,12 @@ $.ajax(auth).done(function(response){
 
 // Single Trip Controller
 .controller('SingleController', function($scope, $http, $state,$ionicSideMenuDelegate) {
+  $scope.whichClassToUse = function(someValue){
+    someValue = ionic.Platform.platform();
+    if(someValue == "android"){
+      return "has-tabs-top"
+    }
+ }
     $scope.flightDetails = function(){
       var from = document.getElementById("from").value;
       var to = document.getElementById("to").value;
@@ -277,6 +295,9 @@ $.ajax(auth).done(function(response){
             toIATA = result[i].id;
             
           }
+          else {
+          airlineCodeFinal = "";
+        }
       }
       
       for (var i = 0; i < airlineInfo.length; i++) {
@@ -681,24 +702,13 @@ app.controller('PaymentMethodController', function($scope, $ionicSideMenuDelegat
 
 //MultiCity Controller
 app.controller('MutliCityController', function($scope, $ionicSideMenuDelegate, $http, $state) {
+      $scope.whichClassToUse = function(someValue){
+    someValue = ionic.Platform.platform();
+    if(someValue == "android"){
+      return "has-tabs-top"
+    }
+ }
       
-      //Addind/Removing Flights
-      $scope.inputs = [{value: null}];
-
-      $scope.addMore = function(index){
-        var limit = index + 2;
-        if(limit <= 3){
-          $scope.inputs.push({value: null});
-        }
-        else {
-          alert("Cannot add more");
-        }
-        
-      }
-      $scope.removeMore = function (index) {
-        $scope.inputs.splice(index, 1);
-      }
-
 
       // Getting list of Airlines
       $http({
@@ -807,6 +817,9 @@ $.ajax(auth).done(function(response){
               airlineCodeFinal = airlineInfo[i].AirlineCode;
               
             }
+            else {
+          airlineCodeFinal = "";
+        }
           }
      
           
