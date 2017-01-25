@@ -19,26 +19,19 @@
                    <div class="linespace"></div>
                   <label class="item item-input item-stacked-label">
                     <span class="input-label">Departure Date</span>
-<<<<<<< HEAD
                     <input type="date" id="departDate0">
                   </label>
-=======
-                    <input type="date" name="departDate" ng-model="input.departDate" id="departDate">
-                  </label>
+                 
                    <div class="linespace"></div>
-                  <label class="item item-input item-stacked-label">
-                    <span class="input-label">Arrival Date</span>
-                    <input type="date" name="arrDate" ng-model="input.arrDate" id="arrDate">
->>>>>>> 45b547fc92b389e4b2a0c75ca61fd3a21ce9777b
-                  </label>
-                   <div class="linespace"></div>
+                  
+
                   <div class="item item-divider">
                     <button class="button button-assertive button-small ion-plus-round" ng-click="form1=true"> Add locations</button>
                      <button class="button button-assertive button-small ion-plus-round" ng-click="form1=false"> Delete locations</button>
                      <button class="button button-balanced button-small ion-checkmark" ng-click="getFirstValue()"> Lock flight</button>
                   </div>
                 </div>
-<<<<<<< HEAD
+
 
 
             <div class="list" ng-show="form1">
@@ -83,10 +76,10 @@
                  
                 </div>                
                 <div class="row">
-=======
+
                  <div class="linespace"></div>
                 <div class="row paddingoff">
->>>>>>> 45b547fc92b389e4b2a0c75ca61fd3a21ce9777b
+
                   <div class="col">
                     <label class="item item-input item-stacked-label">
                       <span class="input-label">Adults</span>
@@ -116,13 +109,10 @@
                     <option ng-repeat="names in airlineName">{{names}}</option>
                   </select>
                 </label>
-<<<<<<< HEAD
-              </div>
-                <a class="button button-block button-positive" ng-click="flightDetailsMulti()" ng-disabled="roundForm.$invalid">
-=======
-             
-                <a class="button button-block button-royal"  ng-click="flightDetails()" ng-disabled="roundForm.$invalid">
->>>>>>> 45b547fc92b389e4b2a0c75ca61fd3a21ce9777b
+
+              </div>             
+                <a class="button button-block button-royal"  ng-click="flightDetailsMulti()" ng-disabled="roundForm.$invalid">
+
                   Proceed
                 </a>
               </form>
