@@ -215,5 +215,5 @@ a.menuitem:hover{background:#ef0d16!important}
 .tab-item .icon{color:#d71d24}
 
 .tabs-striped .tab-item.tab-item-active{border-color:#d71d24!important}
-.home-icon{background:url(../images/home-icon.png) no-repeat; width:25px; height:21px; display:inline-block} 
+.home-icon{background:url(../images/home-icon.png) no-repeat; width:25px; height:21px; display:inline-block; float:left} 
 
